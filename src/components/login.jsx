@@ -1,103 +1,190 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import LockIcon from '@material-ui/icons/LockOutlined';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import { TextField } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
-
-const styles = theme => ({
-  main: {
-    width: 'auto',
-    display: 'block', // Fix IE 11 issue.
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-      width: 400,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  paper: {
-    marginTop: theme.spacing.unit * 12,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
-  },
-  avatar: {
-    margin: theme.spacing.unit,
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit,
-  },
-  submit: {
-    marginTop: theme.spacing.unit * 3,
-  },
-});
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+//Custom Component
 
 class SignIn extends Component {
 
   state = {
-    isSignIn: true
+    user: '',
+    password: '',
+    isLoading: false,
+    isSignIn: true,
+    rePassword: '',
+    firstName: '',
+    lastName: '',
+    dob: '',
+    cell: '',
+    genderM: '',
+    genderF: '',
   }
 
-  changeEvent = () => {
+  onChangeHandler = ev => {
+    const { name, value } = ev.target;
+    this.setState({
+      [name]: value,
+    });
+  }
+
+  onSignInChange = () => {
     this.setState(state => ({
-      isSignIn: !state.isSignIn,
+      isSignIn: !state.isSignIn
     }));
   }
 
   render() {
+    const {
+      user, password, isSignIn, isLoading, rePassword, firstName,
+      lastName, fatherName, dob, cell, genderM, genderF } = this.state;
     const { classes } = this.props;
-    
     return (
-      <main className={classes.main}>
-        <CssBaseline />
-        <Paper className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <form className={classes.form}>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="email">Email Address</InputLabel>
-              <Input id="email" name="email" autoComplete="email" autoFocus />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="password">Password</InputLabel>
-              <Input name="password" type="password" id="password" autoComplete="current-password" />
-            </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+      <div className={classes.motherContainer}>
+        {isLoading ?
+          <CircularProgress />
+          :
+          <Paper
+            className={classes.root}
+            elevation={5}>
+            <Typography
+              align='center'
+              color='secondary'
+              variant='h4'>
+              BLOOD BANK
+              </Typography>
+            <Typography
+              align='center'
+              color='primary'
+              variant='h5'
+              gutterBottom={true} >
+              {isSignIn ? 'Sign In' : 'Sign Up'}
+            </Typography>
+            <TextField
+              margin='normal'
+              fullWidth={true}
+              autofocus={true}
+              required={true}
+              label='Email'
+              placeholder='Please Enter'
+              variant='outlined'
+              type='email'
+              name='user' value={user}
+              onChange={this.onChangeHandler} />
+            <br />
+            <TextField
+              margin='normal'
+              fullWidth={true}
+              required={true}
+              label='Password'
+              placeholder='Please Enter'
+              variant='outlined'
+              type='password'
+              name='password' value={password}
+              onChange={this.onChangeHandler} />
+            {!isSignIn ?
+            <div>
+              <TextField
+                margin='normal'
+                fullWidth={true}
+                required={true}
+                label='Confirm Password'
+                placeholder='Please Enter'
+                variant='outlined'
+                type='password'
+                name='rePassword' value={rePassword}
+                onChange={this.onChangeHandler} />
+              <TextField
+                margin='normal'
+                fullWidth={true}
+                label='First Name'
+                placeholder='Please Enter'
+                variant='outlined'
+                type='text'
+                name='firstName' value={firstName}
+                onChange={this.onChangeHandler} />
+              <TextField
+                margin='normal'
+                fullWidth={true}
+                label='Last Name'
+                placeholder='Please Enter'
+                variant='outlined'
+                type='text'
+                name='lastName' value={lastName}
+                onChange={this.onChangeHandler} />
+              <TextField
+                margin='normal'
+                fullWidth={true}
+                label='Father Name'
+                placeholder='Please Enter'
+                variant='outlined'
+                type='text'
+                name='fatherName' value={fatherName}
+                onChange={this.onChangeHandler} />
+              <TextField
+                margin='normal'
+                fullWidth={true}
+                label='Date of Birth'
+                InputLabelProps={{ shrink: true }}
+                variant='outlined'
+                type='date'
+                name='dob' value={dob}
+                onChange={this.onChangeHandler} />
+              <TextField
+                margin='normal'
+                fullWidth={true}
+                label='Phone Number'
+                variant='outlined'
+                type='text'
+                name='cell' value={cell}
+                onChange={this.onChangeHandler} />
+              </div>
+              : ''}
             <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Sign in
+              className={classes.customSpacing}
+              color='primary'
+              fullWidth={true}
+              size='large'
+              variant='contained'>
+              {isSignIn ? 'Sign In' : 'Sign Up'}
             </Button>
-          </form>
-        </Paper>
-      </main>
+            <Typography>
+              {isSignIn ? "Don't have an ID ?" : "Already have an ID ?"}
+              <Button
+                onClick={this.onSignInChange}
+                variant='text'
+                color='secondary' >
+                {isSignIn ? 'Sign Up' : 'Sign In'}
+              </Button>
+            </Typography>
+          </Paper>
+        }
+      </div>
     );
   }
 }
+
+const styles = theme => ({
+  motherContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // minWidth: '100%',
+    minHeight: '100vh',
+  },
+  root: {
+    ...theme.mixins.gutters(),
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2,
+    margin: theme.spacing.unit * 2,
+    width: 350,
+    textAlign: 'center',
+  },
+});
 
 SignIn.propTypes = {
   classes: PropTypes.object.isRequired,
