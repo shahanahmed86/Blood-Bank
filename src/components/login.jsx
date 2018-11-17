@@ -1,5 +1,7 @@
+//React Basic Component
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+//Material-UI Components
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { TextField } from '@material-ui/core';
@@ -10,21 +12,25 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-//Custom Component
+//firebase & its components
+import * as firebase from 'firebase';
+import './config';
 
 class SignIn extends Component {
 
   state = {
-    user: '',
-    password: '',
     isLoading: false,
     isSignIn: true,
-    rePassword: '',
-    firstName: '',
-    lastName: '',
-    dob: '',
-    cell: '',
-    gender: '',
+    uid: '',
+    user: 'admin@admin.com',
+    password: '123456',
+    rePassword: '123456',
+    firstName: 'Shahan',
+    lastName: 'Ahmed Khan',
+    fatherName: 'Abdus Subhan Khan',
+    dob: '1986-01-29',
+    cell: '00923362122588',
+    gender: 'Male',
   }
 
   handleChange = ev => {
@@ -40,11 +46,33 @@ class SignIn extends Component {
     }));
   }
 
+  onSignUpHandler = () => {
+    this.setState({
+      isLoading: true,
+    });
+    const {
+      isSignIn, user, password, rePassword, firstName,
+      lastName, fatherName, dob, cell, gender
+    } = this.state;
+    if (!isSignIn) {
+      firebase.auth().createUserWithEmailAndPassword(user, password)
+      .then(resp => {
+        this.setState({
+          isLoading: false,
+          uid: resp.user.uid,
+        });
+      })
+      .catch(error => console.log(error))
+    }
+  }
+
   render() {
     const {
       user, password, isSignIn, isLoading, rePassword, firstName,
-      lastName, fatherName, dob, cell, gender } = this.state;
+      lastName, fatherName, dob, cell, gender
+    } = this.state;
     const { classes } = this.props;
+    console.log(this.state);
     return (
       <div className={classes.motherContainer}>
         {isLoading ?
@@ -69,8 +97,7 @@ class SignIn extends Component {
             <TextField
               margin='normal'
               fullWidth={true}
-              autofocus={true}
-              required={true}
+              autoFocus={true}
               label='Email'
               placeholder='Please Enter'
               variant='outlined'
@@ -81,7 +108,6 @@ class SignIn extends Component {
             <TextField
               margin='normal'
               fullWidth={true}
-              required={true}
               label='Password'
               placeholder='Please Enter'
               variant='outlined'
@@ -93,7 +119,6 @@ class SignIn extends Component {
                 <TextField
                   margin='normal'
                   fullWidth={true}
-                  required={true}
                   label='Confirm Password'
                   placeholder='Please Enter'
                   variant='outlined'
@@ -148,7 +173,6 @@ class SignIn extends Component {
                   variant='outlined'
                   fullWidth={true}
                   margin='normal'
-                  required={true}
                 >
                   <InputLabel
                     htmlFor="filled-gender-native-simple"
@@ -161,14 +185,14 @@ class SignIn extends Component {
                     onChange={this.handleChange}
                     input={
                       <OutlinedInput
-                        labelWidth={64}
+                        labelWidth={55}
                         name="gender"
                         id="filled-gender-native-simple"
                       />}
                   >
                     <option value="" />
-                    <option value={10}>Male</option>
-                    <option value={20}>Female</option>
+                    <option value='Male'>Male</option>
+                    <option value='Female'>Female</option>
                   </Select>
                 </FormControl>
               </div>
@@ -178,6 +202,7 @@ class SignIn extends Component {
               color='primary'
               fullWidth={true}
               size='large'
+              onClick={this.onSignUpHandler}
               variant='contained'>
               {isSignIn ? 'Sign In' : 'Sign Up'}
             </Button>
@@ -186,6 +211,7 @@ class SignIn extends Component {
               <Button
                 onClick={this.onSignInChange}
                 variant='text'
+                size='small'
                 color='secondary' >
                 {isSignIn ? 'Sign Up' : 'Sign In'}
               </Button>
@@ -203,8 +229,11 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    // minWidth: '100%',
     minHeight: '100vh',
+  },
+  customSpacing: {
+    marginTop: theme.spacing.unit * 1.5,
+    marginBottom: theme.spacing.unit,
   },
   root: {
     ...theme.mixins.gutters(),
