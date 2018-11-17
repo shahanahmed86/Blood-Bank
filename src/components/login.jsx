@@ -21,7 +21,6 @@ class SignIn extends Component {
   state = {
     isLoading: false,
     isSignIn: true,
-    uid: '',
     user: 'admin@admin.com',
     password: '123456',
     rePassword: '123456',
@@ -50,19 +49,57 @@ class SignIn extends Component {
     this.setState({
       isLoading: true,
     });
-    const {
+    let {
       isSignIn, user, password, rePassword, firstName,
       lastName, fatherName, dob, cell, gender
     } = this.state;
     if (!isSignIn) {
-      firebase.auth().createUserWithEmailAndPassword(user, password)
+      if (password === rePassword) {
+        if (password.length >= 6) {
+          firebase.auth().createUserWithEmailAndPassword(user, password)
+            .then(resp => {
+              user = password = rePassword = firstName = lastName = fatherName = dob = cell = gender = '';
+              this.setState({
+                isLoading: false,
+                user, password, rePassword, firstName,
+                lastName, fatherName, dob, cell, gender,
+              });
+            })
+            .catch(error => {
+              this.setState({
+                isLoading: false,
+                errorMessage: error.message,
+              });
+            })
+        }
+        else {
+          this.setState({
+            isLoading: false,
+            errorMessage: 'Password length must atleast be six (06) character long',
+          });
+        }
+      }
+      else {
+        this.setState({
+          isLoading: false,
+          errorMessage: 'You must type identical password in confirm box',
+        });
+      }
+    }
+    else {
+      firebase.auth().signInWithEmailAndPassword(user, password)
       .then(resp => {
         this.setState({
           isLoading: false,
-          uid: resp.user.uid,
+        });
+        this.props.history.replace('/dashboard', resp.user.uid);
+      })
+      .catch(error => {
+        this.setState({
+          isLoading: false,
+          errorMessage: error.message,
         });
       })
-      .catch(error => console.log(error))
     }
   }
 
@@ -72,7 +109,6 @@ class SignIn extends Component {
       lastName, fatherName, dob, cell, gender
     } = this.state;
     const { classes } = this.props;
-    console.log(this.state);
     return (
       <div className={classes.motherContainer}>
         {isLoading ?
