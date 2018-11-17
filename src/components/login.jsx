@@ -1,6 +1,7 @@
 //React Basic Component
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 //Material-UI Components
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -12,15 +13,20 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+
 //firebase & its components
 import * as firebase from 'firebase';
 import './config';
 
-class SignIn extends Component {
+//Custom Tags
+import PositionedSnackbar from '../containers/snackbar';
 
+class SignIn extends Component {
   state = {
     isLoading: false,
     isSignIn: true,
+    open: false,
+    message: '',
     user: 'admin@admin.com',
     password: '123456',
     rePassword: '123456',
@@ -30,6 +36,7 @@ class SignIn extends Component {
     dob: '1986-01-29',
     cell: '00923362122588',
     gender: 'Male',
+    ref: firebase.database().ref(),
   }
 
   handleChange = ev => {
@@ -45,44 +52,59 @@ class SignIn extends Component {
     }));
   }
 
+  handleCloseMessage = () => {
+    this.setState({
+      open: false,
+    })
+  }
+
   onSignUpHandler = () => {
     this.setState({
       isLoading: true,
     });
     let {
       isSignIn, user, password, rePassword, firstName,
-      lastName, fatherName, dob, cell, gender
+      lastName, fatherName, dob, cell, gender, ref
     } = this.state;
     if (!isSignIn) {
       if (password === rePassword) {
         if (password.length >= 6) {
           firebase.auth().createUserWithEmailAndPassword(user, password)
             .then(resp => {
+              const uid = resp.user.uid;
+              ref.child(uid).child('profile').set({
+                user, firstName, lastName, fatherName, dob, cell, gender, uid,
+              });
               user = password = rePassword = firstName = lastName = fatherName = dob = cell = gender = '';
               this.setState({
                 isLoading: false,
-                user, password, rePassword, firstName,
-                lastName, fatherName, dob, cell, gender,
+                isSignIn: true,
+                open: true,
+                message: 'Email Registered Successfully, please Sign in !',
+                user, password, rePassword, firstName, lastName, fatherName, dob, cell, gender,
               });
             })
             .catch(error => {
               this.setState({
+                open: true,
                 isLoading: false,
-                errorMessage: error.message,
+                message: error.message,
               });
             })
         }
         else {
           this.setState({
+            open: true,
             isLoading: false,
-            errorMessage: 'Password length must atleast be six (06) character long',
+            message: 'Password length must atleast be six (06) character long',
           });
         }
       }
       else {
         this.setState({
+          open: true,
           isLoading: false,
-          errorMessage: 'You must type identical password in confirm box',
+          message: 'Confirm password must be identical',
         });
       }
     }
@@ -96,8 +118,9 @@ class SignIn extends Component {
       })
       .catch(error => {
         this.setState({
+          open: true,
           isLoading: false,
-          errorMessage: error.message,
+          message: error.message,
         });
       })
     }
@@ -105,7 +128,7 @@ class SignIn extends Component {
 
   render() {
     const {
-      user, password, isSignIn, isLoading, rePassword, firstName,
+      isSignIn, isLoading, open, message, user, password, rePassword, firstName,
       lastName, fatherName, dob, cell, gender
     } = this.state;
     const { classes } = this.props;
@@ -254,6 +277,11 @@ class SignIn extends Component {
             </Typography>
           </Paper>
         }
+        <PositionedSnackbar
+          open={open}
+          close={this.handleCloseMessage}
+          message={message}
+        />
       </div>
     );
   }
