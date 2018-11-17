@@ -6,6 +6,10 @@ import { TextField } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 //Custom Component
 
 class SignIn extends Component {
@@ -20,11 +24,10 @@ class SignIn extends Component {
     lastName: '',
     dob: '',
     cell: '',
-    genderM: '',
-    genderF: '',
+    gender: '',
   }
 
-  onChangeHandler = ev => {
+  handleChange = ev => {
     const { name, value } = ev.target;
     this.setState({
       [name]: value,
@@ -40,7 +43,7 @@ class SignIn extends Component {
   render() {
     const {
       user, password, isSignIn, isLoading, rePassword, firstName,
-      lastName, fatherName, dob, cell, genderM, genderF } = this.state;
+      lastName, fatherName, dob, cell, gender } = this.state;
     const { classes } = this.props;
     return (
       <div className={classes.motherContainer}>
@@ -73,7 +76,7 @@ class SignIn extends Component {
               variant='outlined'
               type='email'
               name='user' value={user}
-              onChange={this.onChangeHandler} />
+              onChange={this.handleChange} />
             <br />
             <TextField
               margin='normal'
@@ -84,63 +87,90 @@ class SignIn extends Component {
               variant='outlined'
               type='password'
               name='password' value={password}
-              onChange={this.onChangeHandler} />
+              onChange={this.handleChange} />
             {!isSignIn ?
-            <div>
-              <TextField
-                margin='normal'
-                fullWidth={true}
-                required={true}
-                label='Confirm Password'
-                placeholder='Please Enter'
-                variant='outlined'
-                type='password'
-                name='rePassword' value={rePassword}
-                onChange={this.onChangeHandler} />
-              <TextField
-                margin='normal'
-                fullWidth={true}
-                label='First Name'
-                placeholder='Please Enter'
-                variant='outlined'
-                type='text'
-                name='firstName' value={firstName}
-                onChange={this.onChangeHandler} />
-              <TextField
-                margin='normal'
-                fullWidth={true}
-                label='Last Name'
-                placeholder='Please Enter'
-                variant='outlined'
-                type='text'
-                name='lastName' value={lastName}
-                onChange={this.onChangeHandler} />
-              <TextField
-                margin='normal'
-                fullWidth={true}
-                label='Father Name'
-                placeholder='Please Enter'
-                variant='outlined'
-                type='text'
-                name='fatherName' value={fatherName}
-                onChange={this.onChangeHandler} />
-              <TextField
-                margin='normal'
-                fullWidth={true}
-                label='Date of Birth'
-                InputLabelProps={{ shrink: true }}
-                variant='outlined'
-                type='date'
-                name='dob' value={dob}
-                onChange={this.onChangeHandler} />
-              <TextField
-                margin='normal'
-                fullWidth={true}
-                label='Phone Number'
-                variant='outlined'
-                type='text'
-                name='cell' value={cell}
-                onChange={this.onChangeHandler} />
+              <div>
+                <TextField
+                  margin='normal'
+                  fullWidth={true}
+                  required={true}
+                  label='Confirm Password'
+                  placeholder='Please Enter'
+                  variant='outlined'
+                  type='password'
+                  name='rePassword' value={rePassword}
+                  onChange={this.handleChange} />
+                <TextField
+                  margin='normal'
+                  fullWidth={true}
+                  label='First Name'
+                  placeholder='Please Enter'
+                  variant='outlined'
+                  type='text'
+                  name='firstName' value={firstName}
+                  onChange={this.handleChange} />
+                <TextField
+                  margin='normal'
+                  fullWidth={true}
+                  label='Last Name'
+                  placeholder='Please Enter'
+                  variant='outlined'
+                  type='text'
+                  name='lastName' value={lastName}
+                  onChange={this.handleChange} />
+                <TextField
+                  margin='normal'
+                  fullWidth={true}
+                  label='Father Name'
+                  placeholder='Please Enter'
+                  variant='outlined'
+                  type='text'
+                  name='fatherName' value={fatherName}
+                  onChange={this.handleChange} />
+                <TextField
+                  margin='normal'
+                  fullWidth={true}
+                  label='Date of Birth'
+                  InputLabelProps={{ shrink: true }}
+                  variant='outlined'
+                  type='date'
+                  name='dob' value={dob}
+                  onChange={this.handleChange} />
+                <TextField
+                  margin='normal'
+                  fullWidth={true}
+                  label='Phone Number'
+                  variant='outlined'
+                  type='text'
+                  name='cell' value={cell}
+                  onChange={this.handleChange} />
+                <FormControl
+                  variant='outlined'
+                  fullWidth={true}
+                  margin='normal'
+                  required={true}
+                >
+                  <InputLabel
+                    htmlFor="filled-gender-native-simple"
+                  >
+                    Gender
+                  </InputLabel>
+                  <Select
+                    native
+                    value={gender}
+                    onChange={this.handleChange}
+                    input={
+                      <OutlinedInput
+                        labelWidth={64}
+                        name="gender"
+                        id="filled-gender-native-simple"
+                      />}
+                  >
+                    <option value="" />
+                    <option value={10}>Male</option>
+                    <option value={20}>Female</option>
+                  </Select>
+                </FormControl>
               </div>
               : ''}
             <Button
@@ -182,7 +212,6 @@ const styles = theme => ({
     paddingBottom: theme.spacing.unit * 2,
     margin: theme.spacing.unit * 2,
     width: 350,
-    textAlign: 'center',
   },
 });
 
