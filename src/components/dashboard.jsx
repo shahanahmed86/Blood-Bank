@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 
 //Material-UI
 import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
+import { TextField, Button, CircularProgress } from '@material-ui/core';
 
 //Firebase
 import * as firebase from 'firebase';
@@ -13,15 +12,16 @@ import * as firebase from 'firebase';
 //Custom Component
 import PrimarySearchAppBar from '../containers/appbar';
 import NativeSelects from '../containers/select';
+import PositionedSnackbar from '../containers/snackbar';
+import DonorsList from '../containers/list';
 
-function Donors(name, bloodType, cell) {
+function Donors(name, bloodType, contact) {
     this.name = name;
     this.bloodType = bloodType;
-    this.cell = cell;
+    this.contact = contact;
 }
 
 const donorsList = [
-    new Donors('', '', ''),
     new Donors('A', 'A-', '03001111111'),
     new Donors('B', 'A+', '03002222222'),
     new Donors('C', 'B-', '03003333333'),
@@ -34,15 +34,18 @@ const donorsList = [
 
 class Dashboard extends Component {
     state = {
-        profile: {},
-        uid: this.props.location.state,
         isLoading: true,
+        uid: this.props.location.state,
+        profile: {},
         error: {},
-        messageState: false,
+        open: false,
         donorsList,
-        bloodType: donorsList.map(val => val.bloodType),
         getDonors: [],
+        bloodTypes: ['', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+', 'O-', 'O+'],
+        isDonor: false,
+        isDonorType: '',
     }
+
     componentDidMount() {
         if (this.state.uid) {
             this.getData();
@@ -66,16 +69,16 @@ class Dashboard extends Component {
     onSignOutHandler = () => {
         firebase.auth().signOut()
             .then(() => {
-                this.props.history.replace('/');
                 this.setState({
                     profile: {},
                     uid: '',
-                })
+                });
+                this.props.history.replace('/');
             })
             .catch(error => {
                 this.setState({
                     error,
-                    messageState: true,
+                    open: true,
                 })
             })
     }
@@ -86,75 +89,39 @@ class Dashboard extends Component {
         switch (blood) {
             case 'AB-':
             case 'AB+': {
-                getDonors.push(donorsList.filter(val => {
-                    switch (val.bloodType) {
-                        case 'A-':
-                        case 'A+':
-                        case 'B-':
-                        case 'B+':
-                        case 'AB-':
-                        case 'AB+':
-                        case 'O-':
-                        case 'O+': {
-                            return val;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                }));
+                getDonors.push(donorsList.find(val => val.bloodType === 'A-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'A+'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'B-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'B+'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'AB-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'AB+'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
                 this.setState({ getDonors });
                 break;
             }
             case 'A-':
             case 'A+': {
-                getDonors.push(donorsList.filter(val => {
-                    switch (val.bloodType) {
-                        case 'A-':
-                        case 'A+':
-                        case 'O-':
-                        case 'O+': {
-                            return val;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                }));
+                getDonors.push(donorsList.find(val => val.bloodType === 'A-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'A+'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
                 this.setState({ getDonors });
                 break;
             }
             case 'B-':
             case 'B+': {
-                getDonors.push(donorsList.filter(val => {
-                    switch (val.bloodType) {
-                        case 'B-':
-                        case 'B+':
-                        case 'O-':
-                        case 'O+': {
-                            return val;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                }));
+                getDonors.push(donorsList.find(val => val.bloodType === 'B-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'B+'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
                 this.setState({ getDonors });
                 break;
             }
             case 'O-':
             case 'O+': {
-                getDonors.push(donorsList.filter(val => {
-                    switch (val.bloodType) {
-                        case 'O-':
-                        case 'O+': {
-                            return val;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                }));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
                 this.setState({ getDonors });
                 break;
             }
@@ -162,12 +129,36 @@ class Dashboard extends Component {
                 this.setState({ getDonors });
             }
         }
-        console.log(getDonors);
+    }
+
+    handleCloseMessage = () => {
+        this.setState({
+            open: false,
+        });
+    }
+
+    checkDonor = () => {
+        this.setState({
+            isDonor: true
+        });
+    }
+
+    becomeDonor = () => {
+        this.setState({
+            isDonor: false
+        })
+    }
+
+    handleChange = ev => {
+        const { name, value } = ev.target;
+        this.setState({
+            [name]: value,
+        });
     }
 
     render() {
         const { classes } = this.props;
-        const { displayName, isLoading, bloodType } = this.state;
+        const { displayName, isLoading, bloodTypes, open, error, getDonors, isDonor, isDonorType } = this.state;
         return (
             <div>
                 {isLoading ?
@@ -180,12 +171,57 @@ class Dashboard extends Component {
                             displayName={displayName}
                             onSignOut={this.onSignOutHandler}
                         />
-                        <NativeSelects
-                            bloodType={bloodType}
-                            getType={this.getBloodType}
-                        />
+                        <div className={classes.newBox}>
+                            {isDonor ?
+                                <div>
+                                    <TextField
+                                        margin='dense'
+                                        type='text'
+                                        name='isDonorType' value={isDonorType}
+                                        onChange={this.handleChange}
+                                        variant='standard'
+                                        placeholder='Blood Group'
+                                    />
+                                    <Button
+                                        variant='contained'
+                                        color='primary'
+                                        size='small'
+                                        onClick={this.becomeDonor}
+                                    >
+                                        Become
+                                    </Button>
+                                    <br/>
+                                </div>
+                                : null}
+                            <Button
+                                onClick={this.checkDonor}
+                                variant='outlined'
+                                color='secondary'
+                                size='small'
+                            >
+                                Donor
+                            </Button>
+                        </div>
+                        <div className={classes.newBox}>
+                            <NativeSelects
+                                bloodType={bloodTypes}
+                                getType={this.getBloodType}
+                            />
+                        </div>
+                        {getDonors.length > 0 ?
+                            <div>
+                                <DonorsList
+                                    data={getDonors}
+                                />
+                            </div>
+                            : ''}
                     </div>
                 }
+                <PositionedSnackbar
+                    open={open}
+                    close={this.handleCloseMessage}
+                    message={error.message}
+                />
             </div>
         );
     }
@@ -203,6 +239,10 @@ const style = theme => ({
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
+    },
+    newBox: {
+        marginTop: theme.spacing.unit,
+        display: 'block',
     },
 });
 
