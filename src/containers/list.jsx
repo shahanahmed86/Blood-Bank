@@ -11,7 +11,6 @@ import Button from '@material-ui/core/Button';
 
 function SimpleTable(props) {
     const { classes, data } = props;
-    console.log(data);
     return (
         <Paper className={classes.root}>
             <Table className={classes.table}>
@@ -20,18 +19,23 @@ function SimpleTable(props) {
                         <TableCell>Serial</TableCell>
                         <TableCell>Donor's Name</TableCell>
                         <TableCell>Blood Group</TableCell>
-                        <TableCell>Contact</TableCell>
-                        <TableCell>request</TableCell>
+                        <TableCell>Gender</TableCell>
+                        <TableCell>Cell</TableCell>
+                        <TableCell>User</TableCell>
+                        <TableCell>Request</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {data.map((value, ind) => {
+                        // firstName, donorBloodType, gender, cell, user
                         return (
                             <TableRow key={ind}>
                                 <TableCell>{ind + 1}</TableCell>
-                                <TableCell component="th" scope="row">{value.name}</TableCell>
-                                <TableCell>{value.bloodType}</TableCell>
-                                <TableCell>{value.contact}</TableCell>
+                                <TableCell component="th" scope="row">{value.firstName}</TableCell>
+                                <TableCell>{value.donorBloodType}</TableCell>
+                                <TableCell>{value.gender}</TableCell>
+                                <TableCell>{value.cell}</TableCell>
+                                <TableCell>{value.user}</TableCell>
                                 <TableCell>
                                     <Button
                                         variant='outlined'
@@ -53,12 +57,12 @@ function SimpleTable(props) {
 
 const styles = theme => ({
     root: {
-        width: 'fit-content',
+        width: '100%',
         marginTop: theme.spacing.unit * 2,
         overflowX: 'auto',
     },
     table: {
-        maxWidth: 100,
+        minWidth: 50,
     },
 });
 
