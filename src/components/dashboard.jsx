@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 //Material-UI
 import { withStyles } from '@material-ui/core/styles';
-import { TextField, Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 
 //Firebase
 import * as firebase from 'firebase';
@@ -33,17 +33,22 @@ const donorsList = [
 ];
 
 class Dashboard extends Component {
-    state = {
-        isLoading: true,
-        uid: this.props.location.state,
-        profile: {},
-        error: {},
-        open: false,
-        donorsList,
-        getDonors: [],
-        bloodTypes: ['', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+', 'O-', 'O+'],
-        isDonor: false,
-        isDonorType: '',
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isLoading: true,
+            uid: props.location.state,
+            profile: {},
+            error: {},
+            open: false,
+            donorsList,
+            getDonors: [],
+            bloodTypes: ['', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+', 'O-', 'O+'],
+            isDonor: false,
+            isDonorType: '',
+            ref: firebase.database().ref(),
+        }
     }
 
     componentDidMount() {
@@ -56,7 +61,8 @@ class Dashboard extends Component {
     }
 
     getData = () => {
-        firebase.database().ref().child(this.state.uid).child('profile').on('value', snapshot => {
+        const { ref, uid } = this.state;
+        ref.child('profile').child(uid).on('value', snapshot => {
             const profile = snapshot.val();
             this.setState({
                 profile,
@@ -64,6 +70,72 @@ class Dashboard extends Component {
                 isLoading: false,
             });
         })
+    }
+
+    getBloodType = blood => {
+        const { donorsList } = this.state;
+        const getDonors = [];
+        switch (blood) {
+            case 'O-': {
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                this.setState({ getDonors });
+                break;
+            }
+            case 'O+': {
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
+                this.setState({ getDonors });
+                break;
+            }
+            case 'A-': {
+                getDonors.push(donorsList.find(val => val.bloodType === 'A-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                this.setState({ getDonors });
+                break;
+            }
+            case 'A+': {
+                getDonors.push(donorsList.find(val => val.bloodType === 'A-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'A+'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
+                this.setState({ getDonors });
+                break;
+            }
+            case 'B-': {
+                getDonors.push(donorsList.find(val => val.bloodType === 'B-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                this.setState({ getDonors });
+                break;
+            }
+            case 'B+': {
+                getDonors.push(donorsList.find(val => val.bloodType === 'B-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'B+'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
+                this.setState({ getDonors });
+                break;
+            }
+            case 'AB-': {
+                getDonors.push(donorsList.find(val => val.bloodType === 'A-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'B-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                this.setState({ getDonors });
+                break;
+            }
+            case 'AB+': {
+                getDonors.push(donorsList.find(val => val.bloodType === 'A-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'A+'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'B-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'B+'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
+                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
+                this.setState({ getDonors });
+                break;
+            }
+            default: {
+                this.setState({ getDonors });
+            }
+        }
     }
 
     onSignOutHandler = () => {
@@ -81,54 +153,6 @@ class Dashboard extends Component {
                     open: true,
                 })
             })
-    }
-
-    getBloodType = blood => {
-        const { donorsList } = this.state;
-        const getDonors = [];
-        switch (blood) {
-            case 'AB-':
-            case 'AB+': {
-                getDonors.push(donorsList.find(val => val.bloodType === 'A-'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'A+'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'B-'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'B+'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'AB-'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'AB+'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
-                this.setState({ getDonors });
-                break;
-            }
-            case 'A-':
-            case 'A+': {
-                getDonors.push(donorsList.find(val => val.bloodType === 'A-'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'A+'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
-                this.setState({ getDonors });
-                break;
-            }
-            case 'B-':
-            case 'B+': {
-                getDonors.push(donorsList.find(val => val.bloodType === 'B-'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'B+'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
-                this.setState({ getDonors });
-                break;
-            }
-            case 'O-':
-            case 'O+': {
-                getDonors.push(donorsList.find(val => val.bloodType === 'O-'));
-                getDonors.push(donorsList.find(val => val.bloodType === 'O+'));
-                this.setState({ getDonors });
-                break;
-            }
-            default: {
-                this.setState({ getDonors });
-            }
-        }
     }
 
     handleCloseMessage = () => {
@@ -158,7 +182,7 @@ class Dashboard extends Component {
 
     render() {
         const { classes } = this.props;
-        const { displayName, isLoading, bloodTypes, open, error, getDonors, isDonor, isDonorType } = this.state;
+        const { displayName, isLoading, bloodTypes, open, error, getDonors, isDonor } = this.state;
         return (
             <div>
                 {isLoading ?
@@ -174,13 +198,9 @@ class Dashboard extends Component {
                         <div className={classes.newBox}>
                             {isDonor ?
                                 <div>
-                                    <TextField
-                                        margin='dense'
-                                        type='text'
-                                        name='isDonorType' value={isDonorType}
-                                        onChange={this.handleChange}
-                                        variant='standard'
-                                        placeholder='Blood Group'
+                                    <NativeSelects
+                                        bloodType={bloodTypes}
+                                        getType={this.getDonorBloodType}
                                     />
                                     <Button
                                         variant='contained'
@@ -190,7 +210,7 @@ class Dashboard extends Component {
                                     >
                                         Become
                                     </Button>
-                                    <br/>
+                                    <br />
                                 </div>
                                 : null}
                             <Button

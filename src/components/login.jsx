@@ -36,7 +36,7 @@ class SignIn extends Component {
     dob: '1986-01-29',
     cell: '00923362122588',
     gender: 'Male',
-    ref: firebase.database().ref(),
+    ref: firebase.database().ref().child('profile'),
   }
 
   handleChange = ev => {
@@ -72,7 +72,7 @@ class SignIn extends Component {
           firebase.auth().createUserWithEmailAndPassword(user, password)
             .then(resp => {
               const uid = resp.user.uid;
-              ref.child(uid).child('profile').set({
+              ref.child(uid).set({
                 user, firstName, lastName, fatherName, dob, cell, gender, uid,
               });
               user = password = rePassword = firstName = lastName = fatherName = dob = cell = gender = '';
