@@ -7,52 +7,44 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 
 function SimpleTable(props) {
     const { classes, data } = props;
-    return (
-        <Paper className={classes.root}>
-            <Table className={classes.table}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Serial</TableCell>
-                        <TableCell>Donor's Name</TableCell>
-                        <TableCell>Blood Group</TableCell>
-                        <TableCell>Gender</TableCell>
-                        <TableCell>Cell</TableCell>
-                        <TableCell>User</TableCell>
-                        <TableCell>Request</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {data.map((value, ind) => {
-                        // firstName, donorBloodType, gender, cell, user
-                        return (
-                            <TableRow key={ind}>
-                                <TableCell>{ind + 1}</TableCell>
-                                <TableCell component="th" scope="row">{value.firstName}</TableCell>
-                                <TableCell>{value.donorBloodType}</TableCell>
-                                <TableCell>{value.gender}</TableCell>
-                                <TableCell>{value.cell}</TableCell>
-                                <TableCell>{value.user}</TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant='outlined'
-                                        size='small'
-                                        color='primary'
-                                        disabled={false}
-                                    >
-                                        Request
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
-        </Paper>
-    );
+    if (data.length > 0) {
+        return (
+            <Paper className={classes.root}>
+                <Table className={classes.table}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Serial</TableCell>
+                            <TableCell>Donor's Name</TableCell>
+                            <TableCell>Blood Group</TableCell>
+                            <TableCell>Gender</TableCell>
+                            <TableCell>Cell</TableCell>
+                            <TableCell>User</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data.map((value, ind) => {
+                            return (
+                                <TableRow key={ind}>
+                                    <TableCell>{ind + 1}</TableCell>
+                                    <TableCell component="th" scope="row">{value.firstName}</TableCell>
+                                    <TableCell>{value.donorBloodType}</TableCell>
+                                    <TableCell>{value.gender}</TableCell>
+                                    <TableCell>{value.cell}</TableCell>
+                                    <TableCell>{value.user}</TableCell>
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
+            </Paper>
+        );
+    }
+    else {
+        return null;
+    }
 }
 
 const styles = theme => ({
