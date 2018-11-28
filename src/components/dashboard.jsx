@@ -89,7 +89,7 @@ class Dashboard extends Component {
 
     getBloodType = blood => {
         const { donorsList } = this.state;
-        const getDonors = [];
+        let getDonors = [];
         switch (blood) {
             case 'O-': {
                 donorsList.forEach(val => {
@@ -201,29 +201,8 @@ class Dashboard extends Component {
                 })
                 break;
             }
-            case 'AB+': {
-                donorsList.forEach(val => {
-                    switch(val.donorBloodType) {
-                        case 'A-':
-                        case 'A+':
-                        case 'B-':
-                        case 'B+':
-                        case 'AB-':
-                        case 'AB+':
-                        case 'O-':
-                        case 'O+': {
-                            getDonors.push(val);
-                            break;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                })
-                break;
-            }
             default: {
-                return null;
+                getDonors = donorsList;
             }
         }
         this.setState({ getDonors });
