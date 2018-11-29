@@ -151,15 +151,15 @@ class SimpleTable extends Component {
         if (getDonors.length > 0) {
             return (
                 <Paper className={classes.root}>
-                    <Table className={classes.table}>
+                    <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Serial</TableCell>
-                                <TableCell>Donor's Name</TableCell>
-                                <TableCell>Blood Group</TableCell>
-                                <TableCell>Gender</TableCell>
-                                <TableCell>Cell</TableCell>
-                                <TableCell>User</TableCell>
+                                <TableCell className={classes.table}>Serial</TableCell>
+                                <TableCell className={classes.table}>Donor's Name</TableCell>
+                                <TableCell className={classes.table}>Blood Group</TableCell>
+                                <TableCell className={classes.table}>Gender</TableCell>
+                                <TableCell className={classes.table}>Cell</TableCell>
+                                <TableCell className={classes.table}>User</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -167,11 +167,16 @@ class SimpleTable extends Component {
                                 return (
                                     <TableRow key={ind}>
                                         <TableCell>{ind + 1}</TableCell>
-                                        <TableCell component="th" scope="row">{value.firstName}</TableCell>
-                                        <TableCell>{value.donorBloodType}</TableCell>
-                                        <TableCell>{value.gender}</TableCell>
-                                        <TableCell>{value.cell}</TableCell>
-                                        <TableCell>{value.user}</TableCell>
+                                        <TableCell
+                                            component="th" scope="row"
+                                            className={classes.table}
+                                        >
+                                            {value.firstName}
+                                        </TableCell>
+                                        <TableCell className={classes.table}>{value.donorBloodType}</TableCell>
+                                        <TableCell className={classes.table}>{value.gender}</TableCell>
+                                        <TableCell className={classes.table}>{value.cell}</TableCell>
+                                        <TableCell className={classes.table}>{value.user}</TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -186,16 +191,15 @@ class SimpleTable extends Component {
     }
 }
 
-const styles = theme => ({
+const styles = {
     root: {
         width: '100%',
-        marginTop: theme.spacing.unit * 2,
         overflowX: 'auto',
-    },
-    table: {
-        minWidth: 50,
-    },
-});
+      },
+      table: {
+        padding: 15,
+      },
+}
 
 SimpleTable.propTypes = {
     classes: PropTypes.object.isRequired,

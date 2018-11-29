@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 //Material-UI
 import { withStyles } from '@material-ui/core/styles';
-import { Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress, Paper, Typography } from '@material-ui/core';
 
 //Firebase
 import * as firebase from 'firebase';
@@ -15,6 +15,7 @@ import NativeSelects from '../containers/select';
 import BecomeDonor from '../containers/become';
 import PositionedSnackbar from '../containers/snackbar';
 import DonorsList from '../containers/list';
+import Profile from './profile';
 
 function Donors(firstName, donorBloodType, gender, cell, user, uid) {
     this.firstName = firstName;
@@ -41,6 +42,7 @@ class Dashboard extends Component {
             isDonorType: '',
             donorBloodType: '',
             blood: '',
+            isProfile: false,
             ref: firebase.database().ref(),
         }
     }
@@ -145,6 +147,10 @@ class Dashboard extends Component {
         });
     }
 
+    onClickOnProfile = () => {
+        this.setState({ isProfile: true, })
+    }
+
     render() {
         const { classes } = this.props;
         const {
@@ -156,7 +162,8 @@ class Dashboard extends Component {
             isDonor,
             donorBloodType,
             donorsList,
-            blood
+            blood,
+            isProfile,
         } = this.state;
         return (
             <div>
@@ -167,51 +174,91 @@ class Dashboard extends Component {
                     :
                     <div className={classes.container}>
                         <PrimarySearchAppBar
-                            displayName={displayName}
                             onSignOut={this.onSignOutHandler}
                         />
-                        <div className={classes.newBox}>
-                            {isDonor ?
-                                <div className={classes.become}>
-                                    <BecomeDonor
-                                        types={bloodTypes}
-                                        donor={donorBloodType}
-                                        getType={this.getDonorBloodType}
-                                    />
-                                    <Button
-                                        variant='contained'
-                                        color='primary'
-                                        size='small'
-                                        onClick={this.becomeDonor}
+                        <div className={classes.flexBoxes}>
+                            <Paper className={classes.flexBox1}>
+                                <div className={classes.newBox}>
+                                    <Typography
+                                        align='center'
+                                        variant='h6'
+                                        color='textPrimary'
                                     >
-                                        Update
-                                    </Button>
+                                        Wellcome
+                                    </Typography>
+                                    <Typography
+                                        align='center'
+                                        color='primary'
+                                        variant='title'>
+                                        {displayName}
+                                    </Typography>
                                     <br />
+                                    <Button
+                                        mini={true}
+                                        color='primary'
+                                        variant='outlined'
+                                        size='small'
+                                        onClick={this.onClickOnProfile}
+                                    >
+                                        Profile
+                                    </Button>
                                 </div>
-                                : ''}
-                            <Button
-                                onClick={this.checkDonor}
-                                variant='outlined'
-                                color='secondary'
-                                size='small'
-                            >
-                                Become a Donor
-                            </Button>
-                        </div>
-                        <div className={classes.newBox}>
-                            <NativeSelects
-                                bloodType={bloodTypes}
-                                getType={this.getBloodType}
-                            />
-                        </div>
-                        {donorsList.length > 0 ? (
-                            <div>
-                                <DonorsList
-                                    data={donorsList}
-                                    type={blood}
-                                />
+                                <br />
+                                <Typography
+                                    style={{ padding: 15 }}
+                                    align='justify'
+                                    color='textPrimary'
+                                >
+                                    If there is an emergency that you required a blood for your loved one then select the blood type.
+                                </Typography>
+                                <div className={classes.newBox}>
+                                    <NativeSelects
+                                        bloodType={bloodTypes}
+                                        getType={this.getBloodType}
+                                    />
+                                </div>
+                            </Paper>
+                            <div className={classes.flexBox2}>
+                                {isProfile ? (
+                                    <Profile />
+                                ) : (
+                                        donorsList.length > 0 ? (
+                                            <DonorsList
+                                                data={donorsList}
+                                                type={blood}
+                                            />
+                                        ) : ''
+                                    )}
                             </div>
-                        ) : ''}
+                            <Paper className={classes.flexBox3}>
+                                <Button
+                                    onClick={this.checkDonor}
+                                    variant='outlined'
+                                    color='secondary'
+                                    size='small'
+                                >
+                                    Become a Donor
+                                </Button>
+                                {isDonor ?
+                                    <div className={classes.become}>
+                                        <BecomeDonor
+                                            types={bloodTypes}
+                                            donor={donorBloodType}
+                                            getType={this.getDonorBloodType}
+                                        />
+                                        <Button
+                                            variant='contained'
+                                            color='primary'
+                                            size='small'
+                                            onClick={this.becomeDonor}
+                                        >
+                                            Update
+                                        </Button>
+                                        <br />
+                                    </div>
+                                    : ''}
+                            </Paper>
+                        </div>
                     </div>
                 }
                 <PositionedSnackbar
@@ -239,15 +286,39 @@ const style = theme => ({
     },
     newBox: {
         marginTop: theme.spacing.unit * 2,
-        display: 'block',
+        textAlign: 'center',
     },
     become: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: theme.spacing.unit,
-        width: 175,
-        height: 'fit-content',
+    },
+    flexBoxes: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        minHeight: '85vh',
+        marginTop: theme.spacing.unit,
+    },
+    flexBox1: {
+        flex: 1.5,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: '85vh',
+        marginRight: theme.spacing.unit,
+    },
+    flexBox2: {
+        flex: 6,
+        marginRight: theme.spacing.unit,
+    },
+    flexBox3: {
+        flex: 1.5,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: 130,
+        paddingTop: theme.spacing.unit * 3,
     }
 });
 

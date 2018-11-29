@@ -7,26 +7,20 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 function ButtonAppBar(props) {
-  const { classes, displayName, onSignOut } = props;
+  const { classes, onSignOut } = props;
   return (
     <div className={classes.root}>
       <AppBar
         position="static"
+        color='secondary'
       >
         <Toolbar>
-          <Typography
-            variant="h6"
-            color="inherit"
-            className={classes.grow}
-          >
-            {displayName}
-          </Typography>
           <Typography
             variant="title"
             color="inherit"
             className={classes.grow}
           >
-            Wellcome to e-Blood-Bank
+            e-Blood-Bank
           </Typography>
           <Button
             color="inherit"
