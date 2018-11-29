@@ -36,11 +36,11 @@ class Dashboard extends Component {
             error: {},
             open: false,
             donorsList: [],
-            getDonors: [],
             bloodTypes: ['', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+', 'O-', 'O+'],
             isDonor: false,
             isDonorType: '',
             donorBloodType: '',
+            blood: '',
             ref: firebase.database().ref(),
         }
     }
@@ -65,7 +65,7 @@ class Dashboard extends Component {
                 isLoading: false,
             });
         });
-        //becoming/updating a donor
+        //become a donor
         ref.child('donors').child(uid).on('value', snapshot => {
             const donor = snapshot.val();
             if (donor) {
@@ -88,124 +88,7 @@ class Dashboard extends Component {
     }
 
     getBloodType = blood => {
-        const { donorsList } = this.state;
-        let getDonors = [];
-        switch (blood) {
-            case 'O-': {
-                donorsList.forEach(val => {
-                    switch(val.donorBloodType) {
-                        case 'O-': {
-                            getDonors.push(val);
-                            break;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                })
-                break;
-            }
-            case 'O+': {
-                donorsList.forEach(val => {
-                    switch(val.donorBloodType) {
-                        case 'O+':
-                        case 'O-': {
-                            getDonors.push(val);
-                            break;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                })
-                break;
-            }
-            case 'A-': {
-                donorsList.forEach(val => {
-                    switch(val.donorBloodType) {
-                        case 'A-':
-                        case 'O-': {
-                            getDonors.push(val);
-                            break;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                })
-                break;
-            }
-            case 'A+': {
-                donorsList.forEach(val => {
-                    switch(val.donorBloodType) {
-                        case 'A-':
-                        case 'A+':
-                        case 'O-':
-                        case 'O+': {
-                            getDonors.push(val);
-                            break;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                })
-                break;
-            }
-            case 'B-': {
-                donorsList.forEach(val => {
-                    switch(val.donorBloodType) {
-                        case 'B-':
-                        case 'O-': {
-                            getDonors.push(val);
-                            break;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                })
-                break;
-            }
-            case 'B+': {
-                donorsList.forEach(val => {
-                    switch(val.donorBloodType) {
-                        case 'B-':
-                        case 'B+':
-                        case 'O-':
-                        case 'O+': {
-                            getDonors.push(val);
-                            break;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                })
-                break;
-            }
-            case 'AB-': {
-                donorsList.forEach(val => {
-                    switch(val.donorBloodType) {
-                        case 'A-':
-                        case 'B-':
-                        case 'AB-':
-                        case 'O-': {
-                            getDonors.push(val);
-                            break;
-                        }
-                        default: {
-                            return null;
-                        }
-                    }
-                })
-                break;
-            }
-            default: {
-                getDonors = donorsList;
-            }
-        }
-        this.setState({ getDonors });
+        this.setState({ blood });
     }
 
     onSignOutHandler = () => {
@@ -249,7 +132,6 @@ class Dashboard extends Component {
         this.setState({
             isDonor: false
         });
-        this.getData();
     }
 
     getDonorBloodType = donorBloodType => {
@@ -265,7 +147,17 @@ class Dashboard extends Component {
 
     render() {
         const { classes } = this.props;
-        const { displayName, isLoading, bloodTypes, open, error, getDonors, isDonor, donorBloodType, donorsList } = this.state;
+        const {
+            displayName,
+            isLoading,
+            bloodTypes,
+            open,
+            error,
+            isDonor,
+            donorBloodType,
+            donorsList,
+            blood
+        } = this.state;
         return (
             <div>
                 {isLoading ?
@@ -312,11 +204,14 @@ class Dashboard extends Component {
                                 getType={this.getBloodType}
                             />
                         </div>
-                        <div>
-                            <DonorsList
-                                data={getDonors.length > 0 ? getDonors : donorsList}
-                            />
-                        </div>
+                        {donorsList.length > 0 ? (
+                            <div>
+                                <DonorsList
+                                    data={donorsList}
+                                    type={blood}
+                                />
+                            </div>
+                        ) : ''}
                     </div>
                 }
                 <PositionedSnackbar
