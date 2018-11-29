@@ -51,9 +51,36 @@ class Profile extends Component {
     }
 
     onSaveProfile = () => {
-        this.setState({
-            isLoading: true,
+        const { uid, onClickOnProfile } = this.props;
+        const { firstName, lastName, fatherName, dob, gender, cell, ref, user, donorBloodType } = this.state;
+        ref.child('profile').child(uid).set({
+            firstName, lastName, fatherName, dob, gender, cell, uid, user
+        })
+        ref.child('donors').child(uid).set({
+            firstName, gender, cell, uid, user, donorBloodType
         });
+        onClickOnProfile();
+    }
+
+    componentDidMount() {
+        this.getData();
+    }
+
+    getData = () => {
+        const { uid } = this.props;
+        const { ref } = this.state;
+        ref.child('profile').child(uid).on('value', snapshot => {
+            const profile = snapshot.val();
+            const { firstName, lastName, fatherName, dob, gender, cell, user } = profile;
+            this.setState({
+                firstName, lastName, fatherName, dob, gender, cell, user
+            });
+        })
+        ref.child('donors').child(uid).on('value', snapshot => {
+            const donors = snapshot.val();
+            const { donorBloodType } = donors;
+            this.setState({ donorBloodType })
+        })
     }
 
     render() {
@@ -152,7 +179,7 @@ class Profile extends Component {
                             onClick={this.onSaveProfile}
                             variant='contained'
                         >
-                            Save                            
+                            Update
                         </Button>
                     </Paper>
                 }

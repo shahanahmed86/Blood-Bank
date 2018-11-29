@@ -148,7 +148,7 @@ class Dashboard extends Component {
     }
 
     onClickOnProfile = () => {
-        this.setState({ isProfile: true, })
+        this.setState(state => ({ isProfile: !state.isProfile }));
     }
 
     render() {
@@ -164,6 +164,7 @@ class Dashboard extends Component {
             donorsList,
             blood,
             isProfile,
+            uid,
         } = this.state;
         return (
             <div>
@@ -220,7 +221,10 @@ class Dashboard extends Component {
                             </Paper>
                             <div className={classes.flexBox2}>
                                 {isProfile ? (
-                                    <Profile />
+                                    <Profile
+                                        uid={uid}
+                                        onClickOnProfile={this.onClickOnProfile}
+                                    />
                                 ) : (
                                         donorsList.length > 0 ? (
                                             <DonorsList
