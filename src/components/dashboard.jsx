@@ -181,6 +181,7 @@ class Dashboard extends Component {
                             <Paper className={classes.flexBox1}>
                                 <div className={classes.newBox}>
                                     <Typography
+                                        style={{ padding: 10 }}
                                         align='center'
                                         variant='h6'
                                         color='textPrimary'
@@ -319,6 +320,7 @@ const style = theme => ({
         maxHeight: 'fit-content',
         margin: theme.spacing.unit,
         paddingBottom: theme.spacing.unit * 2,
+        paddingTop: theme.spacing.unit,
     },
     flexBox2: {
         flex: 4,
