@@ -185,7 +185,7 @@ class Dashboard extends Component {
                                         variant='h6'
                                         color='textPrimary'
                                     >
-                                        Wellcome
+                                        Welcome
                                     </Typography>
                                     <Typography
                                         align='center'
