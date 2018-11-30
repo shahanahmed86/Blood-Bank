@@ -151,7 +151,7 @@ class SimpleTable extends Component {
         if (getDonors.length > 0) {
             return (
                 <Paper className={classes.root}>
-                    <Table>
+                    <Table className={classes.widthTable}>
                         <TableHead>
                             <TableRow>
                                 <TableCell className={classes.table}>Serial</TableCell>

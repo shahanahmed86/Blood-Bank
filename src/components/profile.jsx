@@ -197,9 +197,7 @@ const styles = theme => ({
     motherContainer: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh',
     },
     root: {
         ...theme.mixins.gutters(),

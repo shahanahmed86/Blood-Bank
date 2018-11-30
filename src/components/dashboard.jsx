@@ -193,7 +193,7 @@ class Dashboard extends Component {
                                         variant='title'>
                                         {displayName}
                                     </Typography>
-                                    <br />
+                                    <br/>
                                     <Button
                                         mini={true}
                                         color='primary'
@@ -204,7 +204,6 @@ class Dashboard extends Component {
                                         Profile
                                     </Button>
                                 </div>
-                                <br />
                                 <Typography
                                     style={{ padding: 15 }}
                                     align='justify'
@@ -235,32 +234,41 @@ class Dashboard extends Component {
                                     )}
                             </div>
                             <Paper className={classes.flexBox3}>
-                                <Button
-                                    onClick={this.checkDonor}
-                                    variant='outlined'
-                                    color='secondary'
-                                    size='small'
-                                >
-                                    Become a Donor
-                                </Button>
-                                {isDonor ?
-                                    <div className={classes.become}>
-                                        <BecomeDonor
-                                            types={bloodTypes}
-                                            donor={donorBloodType}
-                                            getType={this.getDonorBloodType}
-                                        />
-                                        <Button
-                                            variant='contained'
-                                            color='primary'
-                                            size='small'
-                                            onClick={this.becomeDonor}
-                                        >
-                                            Update
+                                <div>
+                                    <Typography
+                                        style={{ padding: 10 }}
+                                        align='justify'
+                                        color='textPrimary'
+                                    >
+                                        If you love/want to donate your blood
+                                    </Typography>
+                                    <Button
+                                        onClick={this.checkDonor}
+                                        variant='outlined'
+                                        color='secondary'
+                                        size='small'
+                                    >
+                                        Click Here
+                                    </Button>
+                                    {isDonor ?
+                                        <div className={classes.become}>
+                                            <BecomeDonor
+                                                types={bloodTypes}
+                                                donor={donorBloodType}
+                                                getType={this.getDonorBloodType}
+                                            />
+                                            <Button
+                                                variant='contained'
+                                                color='primary'
+                                                size='small'
+                                                onClick={this.becomeDonor}
+                                            >
+                                                Update
                                         </Button>
-                                        <br />
-                                    </div>
-                                    : ''}
+                                            <br />
+                                        </div>
+                                        : ''}
+                                </div>
                             </Paper>
                         </div>
                     </div>
@@ -289,7 +297,6 @@ const style = theme => ({
         minHeight: '100vh',
     },
     newBox: {
-        marginTop: theme.spacing.unit * 2,
         textAlign: 'center',
     },
     become: {
@@ -302,27 +309,32 @@ const style = theme => ({
         flexWrap: 'wrap',
         justifyContent: 'space-between',
         minHeight: '85vh',
-        marginTop: theme.spacing.unit,
     },
     flexBox1: {
-        flex: 1.5,
+        flex: 1.25,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        height: '85vh',
-        marginRight: theme.spacing.unit,
+        minHeight: 200,
+        maxHeight: 'fit-content',
+        margin: theme.spacing.unit,
+        paddingBottom: theme.spacing.unit * 2,
     },
     flexBox2: {
-        flex: 6,
-        marginRight: theme.spacing.unit,
+        flex: 4,
+        margin: theme.spacing.unit,
     },
     flexBox3: {
-        flex: 1.5,
+        flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        height: 130,
-        paddingTop: theme.spacing.unit * 3,
+        minHeight: 190,
+        maxHeight: 150,
+        minWidth: 200,
+        maxWidth: 250,
+        paddingTop: theme.spacing.unit,
+        margin: theme.spacing.unit,
+        textAlign: 'center',
     }
 });
 
