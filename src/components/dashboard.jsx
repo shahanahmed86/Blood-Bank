@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 //Material-UI
 import { withStyles } from '@material-ui/core/styles';
-import { Button, CircularProgress, Paper, Typography } from '@material-ui/core';
+import { Button, CircularProgress, Paper, Typography, TextField } from '@material-ui/core';
 
 //Firebase
 import * as firebase from 'firebase';
@@ -43,6 +43,7 @@ class Dashboard extends Component {
             donorBloodType: '',
             blood: '',
             isProfile: false,
+            donorLastDate: '',
             ref: firebase.database().ref(),
         }
     }
@@ -165,6 +166,7 @@ class Dashboard extends Component {
             blood,
             isProfile,
             uid,
+            donorLastDate,
         } = this.state;
         return (
             <div>
@@ -194,7 +196,7 @@ class Dashboard extends Component {
                                         variant='title'>
                                         {displayName}
                                     </Typography>
-                                    <br/>
+                                    <br />
                                     <Button
                                         mini={true}
                                         color='primary'
@@ -253,11 +255,21 @@ class Dashboard extends Component {
                                     </Button>
                                     {isDonor ?
                                         <div className={classes.become}>
+                                            <br />
                                             <BecomeDonor
                                                 types={bloodTypes}
                                                 donor={donorBloodType}
                                                 getType={this.getDonorBloodType}
                                             />
+                                            <br />
+                                            <TextField
+                                                label='Last Time Donate'
+                                                InputLabelProps={{ shrink: true }}
+                                                variant='outlined'
+                                                type='date'
+                                                name='donorLastDate' value={donorLastDate}
+                                                onChange={this.handleChange} />
+                                            <br />
                                             <Button
                                                 variant='contained'
                                                 color='primary'
@@ -265,8 +277,7 @@ class Dashboard extends Component {
                                                 onClick={this.becomeDonor}
                                             >
                                                 Update
-                                        </Button>
-                                            <br />
+                                            </Button>
                                         </div>
                                         : ''}
                                 </div>
@@ -295,14 +306,14 @@ const style = theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh',
+        minHeight: '95vh',
     },
     newBox: {
         textAlign: 'center',
     },
     become: {
         display: 'flex',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
         alignItems: 'center',
     },
     flexBoxes: {
@@ -311,32 +322,37 @@ const style = theme => ({
         justifyContent: 'space-between',
         minHeight: '85vh',
     },
+    
     flexBox1: {
         flex: 1.25,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        minHeight: 200,
+        minWidth: 250,
+        maxWidth: 275,
+        minHeight: 210,
         maxHeight: 'fit-content',
         margin: theme.spacing.unit,
         paddingBottom: theme.spacing.unit * 2,
         paddingTop: theme.spacing.unit,
     },
+
     flexBox2: {
         flex: 4,
         margin: theme.spacing.unit,
     },
+
     flexBox3: {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 190,
-        maxHeight: 150,
-        minWidth: 200,
-        maxWidth: 250,
-        paddingTop: theme.spacing.unit,
+        minHeight: 310,
+        maxHeight: 310,
+        minWidth: 250,
+        maxWidth: 275,
         margin: theme.spacing.unit,
         textAlign: 'center',
+        paddingBottom: theme.spacing.unit,
     }
 });
 
