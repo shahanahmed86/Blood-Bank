@@ -24,17 +24,22 @@ import './config';
 import PositionedSnackbar from '../containers/snackbar';
 
 class Profile extends Component {
-    state = {
-        isLoading: false,
-        open: false,
-        message: '',
-        firstName: '',
-        lastName: '',
-        fatherName: '',
-        dob: '',
-        cell: '',
-        gender: '',
-        ref: firebase.database().ref(),
+    constructor() {
+        super();
+        
+        this.state = {
+            isLoading: false,
+            open: false,
+            message: '',
+            firstName: '',
+            lastName: '',
+            fatherName: '',
+            dob: '',
+            cell: '',
+            gender: '',
+            donorBloodType: '',
+            ref: firebase.database().ref(),
+        }
     }
 
     handleChange = ev => {
@@ -52,13 +57,15 @@ class Profile extends Component {
 
     onSaveProfile = () => {
         const { uid, onClickOnProfile } = this.props;
-        const { firstName, lastName, fatherName, dob, gender, cell, ref, user, donorBloodType } = this.state;
+        let { firstName, lastName, fatherName, dob, gender, cell, ref, user, donorBloodType } = this.state;
         ref.child('profile').child(uid).set({
             firstName, lastName, fatherName, dob, gender, cell, uid, user
         })
-        ref.child('donors').child(uid).set({
-            firstName, gender, cell, uid, user, donorBloodType
-        });
+        if (donorBloodType) {
+            ref.child('donors').child(uid).set({
+                firstName, gender, cell, uid, user, donorBloodType
+            });
+        }
         onClickOnProfile();
     }
 
@@ -77,9 +84,11 @@ class Profile extends Component {
             });
         })
         ref.child('donors').child(uid).on('value', snapshot => {
-            const donors = snapshot.val();
-            const { donorBloodType } = donors;
-            this.setState({ donorBloodType })
+            const donor = snapshot.val();
+            if (donor) {
+                const { donorBloodType } = donor;
+                this.setState({ donorBloodType })
+            }
         })
     }
 

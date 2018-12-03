@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 //Material-UI
 import { withStyles } from '@material-ui/core/styles';
-import { Button, CircularProgress, Paper, Typography, TextField } from '@material-ui/core';
+import { Button, CircularProgress, Paper, Typography } from '@material-ui/core';
 
 //Firebase
 import * as firebase from 'firebase';
@@ -43,7 +43,6 @@ class Dashboard extends Component {
             donorBloodType: '',
             blood: '',
             isProfile: false,
-            donorLastDate: '',
             ref: firebase.database().ref(),
         }
     }
@@ -166,7 +165,6 @@ class Dashboard extends Component {
             blood,
             isProfile,
             uid,
-            donorLastDate,
         } = this.state;
         return (
             <div>
@@ -204,7 +202,7 @@ class Dashboard extends Component {
                                         size='small'
                                         onClick={this.onClickOnProfile}
                                     >
-                                        Profile
+                                        {isProfile ? 'Donors List' : 'Profile'}
                                     </Button>
                                 </div>
                                 <Typography
@@ -262,14 +260,6 @@ class Dashboard extends Component {
                                                 getType={this.getDonorBloodType}
                                             />
                                             <br />
-                                            <TextField
-                                                label='Last Time Donate'
-                                                InputLabelProps={{ shrink: true }}
-                                                variant='outlined'
-                                                type='date'
-                                                name='donorLastDate' value={donorLastDate}
-                                                onChange={this.handleChange} />
-                                            <br />
                                             <Button
                                                 variant='contained'
                                                 color='primary'
@@ -313,8 +303,8 @@ const style = theme => ({
     },
     become: {
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
     },
     flexBoxes: {
         display: 'flex',
@@ -322,34 +312,32 @@ const style = theme => ({
         justifyContent: 'space-between',
         minHeight: '85vh',
     },
-    
     flexBox1: {
         flex: 1.25,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         minWidth: 250,
-        maxWidth: 275,
+        maxWidth: 250,
         minHeight: 210,
         maxHeight: 'fit-content',
         margin: theme.spacing.unit,
         paddingBottom: theme.spacing.unit * 2,
         paddingTop: theme.spacing.unit,
     },
-
     flexBox2: {
         flex: 4,
+        maxWidth: 'fit-content',
         margin: theme.spacing.unit,
     },
-
     flexBox3: {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 310,
-        maxHeight: 310,
+        minHeight: 150,
+        maxHeight: 150,
         minWidth: 250,
-        maxWidth: 275,
+        maxWidth: 250,
         margin: theme.spacing.unit,
         textAlign: 'center',
         paddingBottom: theme.spacing.unit,

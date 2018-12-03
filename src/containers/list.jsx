@@ -193,7 +193,7 @@ class SimpleTable extends Component {
 
 const styles = {
     root: {
-        width: '100%',
+        width: 'fit-content',
         overflowX: 'auto',
       },
       table: {
