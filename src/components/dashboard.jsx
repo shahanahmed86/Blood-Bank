@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 //Material-UI
 import { withStyles } from '@material-ui/core/styles';
-import { Button, CircularProgress, Paper, Typography } from '@material-ui/core';
+import { Button, CircularProgress, Paper, Typography, TextField } from '@material-ui/core';
 
 //Firebase
 import * as firebase from 'firebase';
@@ -34,7 +34,7 @@ class Dashboard extends Component {
             isLoading: true,
             uid: props.location.state,
             profile: {},
-            error: {},
+            message: '',
             open: false,
             donorsList: [],
             bloodTypes: ['', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+', 'O-', 'O+'],
@@ -43,6 +43,7 @@ class Dashboard extends Component {
             donorBloodType: '',
             blood: '',
             isProfile: false,
+            lastDonate: '',
             ref: firebase.database().ref(),
         }
     }
@@ -104,7 +105,7 @@ class Dashboard extends Component {
             })
             .catch(error => {
                 this.setState({
-                    error,
+                    message: error.message,
                     open: true,
                 })
             })
@@ -117,9 +118,35 @@ class Dashboard extends Component {
     }
 
     checkDonor = () => {
-        this.setState({
-            isDonor: true
-        });
+        const { lastDonate, profile } = this.state;
+        const { dob } = profile;
+        const thisYear = new Date().getFullYear();
+        const age = new Date(dob).getFullYear();
+        const currentDate = new Date().getTime();
+        const lastDonationDate = new Date(lastDonate).getTime();
+        const qualityDonor = Math.floor((currentDate - lastDonationDate) / (1000 * 60 * 60 * 24 * 30));
+        const ageLimit = thisYear - age;
+        if (ageLimit >= 18 && ageLimit <= 60) {
+            if (qualityDonor >= 6) {
+                this.setState({
+                    isDonor: true
+                });
+            }
+            else {
+                this.setState({
+                    isDonor: false,
+                    open: true,
+                    message: `A donor must have passed six months of period since last donation of blood`
+                })
+            }
+        }
+        else {
+            this.setState({
+                isDonor: false,
+                open: true,
+                message: `A donor age must between 18 to 45 years in order to donate but your current age is ${ageLimit}`
+            })
+        }
     }
 
     becomeDonor = () => {
@@ -158,13 +185,14 @@ class Dashboard extends Component {
             isLoading,
             bloodTypes,
             open,
-            error,
+            message,
             isDonor,
             donorBloodType,
             donorsList,
             blood,
             isProfile,
             uid,
+            lastDonate,
         } = this.state;
         return (
             <div>
@@ -243,6 +271,14 @@ class Dashboard extends Component {
                                     >
                                         If you love/want to donate your blood
                                     </Typography>
+                                    <TextField
+                                        margin='normal'
+                                        label='Last Donation Date'
+                                        InputLabelProps={{ shrink: true }}
+                                        variant='outlined'
+                                        type='date'
+                                        name='lastDonate' value={lastDonate}
+                                        onChange={this.handleChange} />
                                     <Button
                                         onClick={this.checkDonor}
                                         variant='outlined'
@@ -253,13 +289,11 @@ class Dashboard extends Component {
                                     </Button>
                                     {isDonor ?
                                         <div className={classes.become}>
-                                            <br />
                                             <BecomeDonor
                                                 types={bloodTypes}
                                                 donor={donorBloodType}
                                                 getType={this.getDonorBloodType}
                                             />
-                                            <br />
                                             <Button
                                                 variant='contained'
                                                 color='primary'
@@ -278,7 +312,7 @@ class Dashboard extends Component {
                 <PositionedSnackbar
                     open={open}
                     close={this.handleCloseMessage}
-                    message={error.message}
+                    message={message}
                 />
             </div>
         );
@@ -303,6 +337,7 @@ const style = theme => ({
     },
     become: {
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -317,8 +352,8 @@ const style = theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        minWidth: 250,
-        maxWidth: 250,
+        minWidth: 275,
+        maxWidth: 275,
         minHeight: 210,
         maxHeight: 'fit-content',
         margin: theme.spacing.unit,
@@ -334,8 +369,8 @@ const style = theme => ({
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 150,
-        maxHeight: 150,
+        minHeight: 280,
+        maxHeight: 280,
         minWidth: 250,
         maxWidth: 250,
         margin: theme.spacing.unit,
