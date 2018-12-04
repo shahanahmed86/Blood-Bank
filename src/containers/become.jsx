@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { withStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
@@ -30,10 +29,10 @@ class BecomeDonor extends React.Component {
         const { classes, types } = this.props;
         return (
             <div className={classes.root}>
-                <FormControl required className={classes.formControl}>
+                <FormControl className={classes.formControl}>
                     <InputLabel
                         ref={ref => { this.InputLabelRef = ref }}
-                        htmlFor="blood-native-required"
+                        htmlFor="blood-native"
                     >
                         Blood
                     </InputLabel>
@@ -43,7 +42,7 @@ class BecomeDonor extends React.Component {
                         onChange={this.handleChange('blood')}
                         name="blood"
                         inputProps={{
-                            id: 'blood-native-required',
+                            id: 'blood-native',
                         }}
                     >
                         {types.map((val, ind) => {
@@ -54,7 +53,6 @@ class BecomeDonor extends React.Component {
                             );
                         })}
                     </Select>
-                    <FormHelperText>Required</FormHelperText>
                 </FormControl>
             </div>
         );

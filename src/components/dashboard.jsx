@@ -284,7 +284,7 @@ class Dashboard extends Component {
                                         variant='outlined'
                                         color='secondary'
                                         size='small'
-                                    >
+                                        >
                                         Click Here
                                     </Button>
                                     {isDonor ?
@@ -295,6 +295,7 @@ class Dashboard extends Component {
                                                 getType={this.getDonorBloodType}
                                             />
                                             <Button
+                                                style={{ marginTop: 20 }}
                                                 variant='contained'
                                                 color='primary'
                                                 size='small'
@@ -337,7 +338,6 @@ const style = theme => ({
     },
     become: {
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -369,13 +369,14 @@ const style = theme => ({
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 280,
-        maxHeight: 280,
+        minHeight: 220,
+        maxHeight: 220,
         minWidth: 250,
         maxWidth: 250,
         margin: theme.spacing.unit,
         textAlign: 'center',
         paddingBottom: theme.spacing.unit,
+        paddingTop: theme.spacing.unit,
     }
 });
 
