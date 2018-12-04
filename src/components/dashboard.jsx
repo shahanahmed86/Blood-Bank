@@ -265,7 +265,6 @@ class Dashboard extends Component {
                             <Paper className={classes.flexBox3}>
                                 <div>
                                     <Typography
-                                        style={{ padding: 10 }}
                                         align='justify'
                                         color='textPrimary'
                                     >
@@ -273,6 +272,7 @@ class Dashboard extends Component {
                                     </Typography>
                                     <TextField
                                         margin='normal'
+                                        fullWidth={true}
                                         label='Last Donation Date'
                                         InputLabelProps={{ shrink: true }}
                                         variant='outlined'
@@ -340,6 +340,7 @@ const style = theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: theme.spacing.unit * 2,
     },
     flexBoxes: {
         display: 'flex',
@@ -375,8 +376,7 @@ const style = theme => ({
         maxWidth: 250,
         margin: theme.spacing.unit,
         textAlign: 'center',
-        paddingBottom: theme.spacing.unit,
-        paddingTop: theme.spacing.unit,
+        padding: theme.spacing.unit * 3,
     }
 });
 
