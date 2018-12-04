@@ -17,13 +17,14 @@ import PositionedSnackbar from '../containers/snackbar';
 import DonorsList from '../containers/list';
 import Profile from './profile';
 
-function Donors(firstName, donorBloodType, gender, cell, user, uid) {
+function Donors(firstName, donorBloodType, gender, cell, user, uid, lastDonate) {
     this.firstName = firstName;
     this.donorBloodType = donorBloodType;
     this.gender = gender;
     this.cell = cell;
     this.user = user;
     this.uid = uid;
+    this.lastDonate = lastDonate;
 }
 
 class Dashboard extends Component {
@@ -72,8 +73,8 @@ class Dashboard extends Component {
         ref.child('donors').child(uid).on('value', snapshot => {
             const donor = snapshot.val();
             if (donor) {
-                const donorBloodType = donor.donorBloodType;
-                this.setState({ donorBloodType });
+                const { donorBloodType, lastDonate } = donor
+                this.setState({ donorBloodType, lastDonate });
             }
         });
         //getting/fetching donors list
@@ -81,11 +82,11 @@ class Dashboard extends Component {
             const donors = snapshot.val();
             const donorsList = [];
             for (let key in donors) {
-                const { firstName, donorBloodType, gender, cell, user, uid } = donors[key]
+                const { firstName, donorBloodType, gender, cell, user, uid, lastDonate } = donors[key]
                 donorsList.push(
-                    new Donors(firstName, donorBloodType, gender, cell, user, uid)
+                    new Donors(firstName, donorBloodType, gender, cell, user, uid, lastDonate)
                 );
-                this.setState({ donorsList });
+                this.setState({ donorsList, });
             }
         })
     }
@@ -118,27 +119,15 @@ class Dashboard extends Component {
     }
 
     checkDonor = () => {
-        const { lastDonate, profile } = this.state;
+        const { profile } = this.state;
         const { dob } = profile;
         const thisYear = new Date().getFullYear();
         const age = new Date(dob).getFullYear();
-        const currentDate = new Date().getTime();
-        const lastDonationDate = new Date(lastDonate).getTime();
-        const qualityDonor = Math.floor((currentDate - lastDonationDate) / (1000 * 60 * 60 * 24 * 30));
         const ageLimit = thisYear - age;
         if (ageLimit >= 18 && ageLimit <= 60) {
-            if (qualityDonor >= 6) {
-                this.setState({
-                    isDonor: true
-                });
-            }
-            else {
-                this.setState({
-                    isDonor: false,
-                    open: true,
-                    message: `A donor must have passed six months of period since last donation of blood`
-                })
-            }
+            this.setState({
+                isDonor: true
+            });
         }
         else {
             this.setState({
@@ -150,17 +139,34 @@ class Dashboard extends Component {
     }
 
     becomeDonor = () => {
-        const { ref, profile, donorBloodType } = this.state;
+        const { ref, profile, donorBloodType, lastDonate } = this.state;
         const { user, uid, firstName, gender, cell } = profile;
+        const lastDonateDate = new Date(lastDonate).getTime();
+        const currentDate = new Date().getTime();
+        const donorLastDate = Math.floor((currentDate - lastDonateDate) / (1000 * 60 * 60 * 24 * 30));
         if (donorBloodType === '') {
             ref.child('donors').child(uid).remove();
+            this.setState({
+                isDonor: false,
+                lastDonate: '',
+            })
         }
         else {
-            ref.child('donors').child(uid).set({ user, uid, firstName, gender, cell, donorBloodType });
+            if (donorLastDate >= 6 || donorLastDate === '') {
+                ref.child('donors').child(uid).set({
+                    user, uid, firstName, gender, cell, donorBloodType, lastDonate
+                });
+                this.setState({
+                    isDonor: false,
+                })
+            }
+            else {
+                this.setState({
+                    open: true,
+                    message: 'A donor must have passed six months of period since last blood donation',
+                })
+            }
         }
-        this.setState({
-            isDonor: false
-        });
     }
 
     getDonorBloodType = donorBloodType => {
@@ -270,39 +276,42 @@ class Dashboard extends Component {
                                     >
                                         If you love/want to donate your blood
                                     </Typography>
-                                    <TextField
-                                        margin='normal'
-                                        fullWidth={true}
-                                        label='Last Donation Date'
-                                        InputLabelProps={{ shrink: true }}
-                                        variant='outlined'
-                                        type='date'
-                                        name='lastDonate' value={lastDonate}
-                                        onChange={this.handleChange} />
                                     <Button
+                                        style={{ marginTop: 15 }}
                                         onClick={this.checkDonor}
                                         variant='outlined'
                                         color='secondary'
                                         size='small'
-                                        >
+                                    >
                                         Click Here
                                     </Button>
                                     {isDonor ?
                                         <div className={classes.become}>
-                                            <BecomeDonor
-                                                types={bloodTypes}
-                                                donor={donorBloodType}
-                                                getType={this.getDonorBloodType}
-                                            />
-                                            <Button
-                                                style={{ marginTop: 20 }}
-                                                variant='contained'
-                                                color='primary'
-                                                size='small'
-                                                onClick={this.becomeDonor}
-                                            >
-                                                Update
-                                            </Button>
+                                            <TextField
+                                                margin='normal'
+                                                fullWidth={true}
+                                                label='Last Donation Date'
+                                                InputLabelProps={{ shrink: true }}
+                                                variant='outlined'
+                                                type='date'
+                                                name='lastDonate' value={lastDonate}
+                                                onChange={this.handleChange} />
+                                            <div className={classes.newFlexBox}>
+                                                <BecomeDonor
+                                                    types={bloodTypes}
+                                                    donor={donorBloodType}
+                                                    getType={this.getDonorBloodType}
+                                                />
+                                                <Button
+                                                    style={{ marginTop: 20 }}
+                                                    variant='contained'
+                                                    color='primary'
+                                                    size='small'
+                                                    onClick={this.becomeDonor}
+                                                >
+                                                    Update
+                                                </Button>
+                                            </div>
                                         </div>
                                         : ''}
                                 </div>
@@ -338,31 +347,37 @@ const style = theme => ({
     },
     become: {
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: theme.spacing.unit * 2,
+    },
+    newFlexBox: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     flexBoxes: {
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        minHeight: '85vh',
+        margin: theme.spacing.unit,
     },
     flexBox1: {
-        flex: 1.25,
+        flex: 1,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        minWidth: 275,
-        maxWidth: 275,
-        minHeight: 210,
+        minWidth: 225,
+        maxWidth: 225,
+        minHeight: 275,
         maxHeight: 'fit-content',
-        margin: theme.spacing.unit,
         paddingBottom: theme.spacing.unit * 2,
         paddingTop: theme.spacing.unit,
+        margin: theme.spacing.unit,
     },
     flexBox2: {
-        flex: 4,
+        flex: 1,
         maxWidth: 'fit-content',
         margin: theme.spacing.unit,
     },
@@ -370,13 +385,13 @@ const style = theme => ({
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 220,
-        maxHeight: 220,
-        minWidth: 250,
-        maxWidth: 250,
-        margin: theme.spacing.unit,
+        minHeight: 'fit-content',
+        maxHeight: 'fit-content',
+        minWidth: 185,
+        maxWidth: 185,
         textAlign: 'center',
         padding: theme.spacing.unit * 3,
+        margin: theme.spacing.unit,
     }
 });
 

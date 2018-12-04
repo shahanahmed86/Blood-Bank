@@ -57,13 +57,13 @@ class Profile extends Component {
 
     onSaveProfile = () => {
         const { uid, onClickOnProfile } = this.props;
-        let { firstName, lastName, fatherName, dob, gender, cell, ref, user, donorBloodType } = this.state;
+        let { firstName, lastName, fatherName, dob, gender, cell, ref, user, donorBloodType, lastDonate } = this.state;
         ref.child('profile').child(uid).set({
             firstName, lastName, fatherName, dob, gender, cell, uid, user
         })
         if (donorBloodType) {
             ref.child('donors').child(uid).set({
-                firstName, gender, cell, uid, user, donorBloodType
+                firstName, gender, cell, uid, user, donorBloodType, lastDonate
             });
         }
         onClickOnProfile();
@@ -86,8 +86,8 @@ class Profile extends Component {
         ref.child('donors').child(uid).on('value', snapshot => {
             const donor = snapshot.val();
             if (donor) {
-                const { donorBloodType } = donor;
-                this.setState({ donorBloodType })
+                const { donorBloodType, lastDonate } = donor;
+                this.setState({ donorBloodType, lastDonate })
             }
         })
     }
