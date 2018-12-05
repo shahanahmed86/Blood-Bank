@@ -143,7 +143,7 @@ class Dashboard extends Component {
         const { user, uid, firstName, gender, cell } = profile;
         const lastDonateDate = new Date(lastDonate).getTime();
         const currentDate = new Date().getTime();
-        const donorLastDate = Math.floor((currentDate - lastDonateDate) / (1000 * 60 * 60 * 24 * 30));
+        const donorLastDate = Math.floor((currentDate - lastDonateDate) / (1000 * 60 * 60 * 24));
         if (donorBloodType === '') {
             ref.child('donors').child(uid).remove();
             this.setState({
@@ -152,7 +152,7 @@ class Dashboard extends Component {
             })
         }
         else {
-            if (donorLastDate >= 6 || lastDonate === '') {
+            if (donorLastDate >= 180 || lastDonate === '') {
                 ref.child('donors').child(uid).set({
                     user, uid, firstName, gender, cell, donorBloodType, lastDonate
                 });
@@ -163,7 +163,7 @@ class Dashboard extends Component {
             else {
                 this.setState({
                     open: true,
-                    message: 'A donor must have passed six months of period since last blood donation',
+                    message: `A donor must have passed 180 days since last blood donation but you have passed only ${donorLastDate}`,
                 })
             }
         }
