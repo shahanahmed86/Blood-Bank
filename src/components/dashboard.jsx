@@ -152,7 +152,7 @@ class Dashboard extends Component {
             })
         }
         else {
-            if (donorLastDate >= 6 || donorLastDate === '') {
+            if (donorLastDate >= 6 || lastDonate === '') {
                 ref.child('donors').child(uid).set({
                     user, uid, firstName, gender, cell, donorBloodType, lastDonate
                 });
