@@ -110,19 +110,19 @@ class SignIn extends Component {
     }
     else {
       firebase.auth().signInWithEmailAndPassword(user, password)
-      .then(resp => {
-        this.setState({
-          isLoading: false,
-        });
-        this.props.history.replace('/dashboard', resp.user.uid);
-      })
-      .catch(error => {
-        this.setState({
-          open: true,
-          isLoading: false,
-          message: error.message,
-        });
-      })
+        .then(resp => {
+          this.setState({
+            isLoading: false,
+          });
+          this.props.history.replace('/dashboard', resp.user.uid);
+        })
+        .catch(error => {
+          this.setState({
+            open: true,
+            isLoading: false,
+            message: error.message,
+          });
+        })
     }
   }
 
@@ -143,16 +143,16 @@ class SignIn extends Component {
             <Typography
               align='center'
               color='secondary'
-              variant='h4'>
-              BLOOD BANK
-              </Typography>
+              variant='h4'
+              children='Blood Bank'
+            />
             <Typography
               align='center'
               color='primary'
               variant='h5'
-              gutterBottom={true} >
-              {isSignIn ? 'Sign In' : 'Sign Up'}
-            </Typography>
+              gutterBottom={true}
+              children={isSignIn ? 'Sign In' : 'Sign Up'}
+            />
             <TextField
               margin='normal'
               fullWidth={true}
@@ -265,8 +265,10 @@ class SignIn extends Component {
               variant='contained'>
               {isSignIn ? 'Sign In' : 'Sign Up'}
             </Button>
-            <Typography>
-              {isSignIn ? "Don't have an ID ?" : "Already have an ID ?"}
+            <div className={classes.flexBox}>
+              <Typography
+                children={isSignIn ? "Don't have an ID ?" : "Already have an ID ?"}
+              />
               <Button
                 onClick={this.onSignInChange}
                 variant='text'
@@ -274,7 +276,7 @@ class SignIn extends Component {
                 color='secondary' >
                 {isSignIn ? 'Sign Up' : 'Sign In'}
               </Button>
-            </Typography>
+            </div>
           </Paper>
         }
         <PositionedSnackbar
@@ -294,6 +296,11 @@ const styles = theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: '100vh',
+  },
+  flexBox: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   customSpacing: {
     marginTop: theme.spacing.unit * 1.5,

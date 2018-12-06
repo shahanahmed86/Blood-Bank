@@ -108,9 +108,9 @@ class Profile extends Component {
                         <Typography
                             align='center'
                             color='secondary'
-                            variant='h4'>
-                            PROFILE
-                        </Typography>
+                            variant='h4'
+                            children='Profile'
+                        />
                         <TextField
                             margin='normal'
                             fullWidth={true}
@@ -202,7 +202,7 @@ class Profile extends Component {
     }
 }
 
-const styles = theme => ({
+const styles =  theme => ({
     motherContainer: {
         display: 'flex',
         flexDirection: 'column',

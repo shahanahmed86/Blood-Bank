@@ -219,15 +219,14 @@ class Dashboard extends Component {
                                         align='center'
                                         variant='h6'
                                         color='textPrimary'
-                                    >
-                                        Welcome
-                                    </Typography>
+                                        children='Welcome'
+                                    />
                                     <Typography
                                         align='center'
                                         color='primary'
-                                        variant='title'>
-                                        {displayName}
-                                    </Typography>
+                                        variant='title'
+                                        children={displayName}
+                                    />
                                     <br />
                                     <Button
                                         mini={true}
@@ -243,9 +242,8 @@ class Dashboard extends Component {
                                     style={{ padding: 15 }}
                                     align='justify'
                                     color='textPrimary'
-                                >
-                                    If there is an emergency that you required a blood for your loved one then select the blood type.
-                                </Typography>
+                                    children='If there is an emergency that you required a blood for your loved one then select the blood type.'
+                                />
                                 <div className={classes.newBox}>
                                     <NativeSelects
                                         bloodType={bloodTypes}
@@ -273,9 +271,8 @@ class Dashboard extends Component {
                                     <Typography
                                         align='justify'
                                         color='textPrimary'
-                                    >
-                                        If you love/want to donate your blood
-                                    </Typography>
+                                        children='If you love/want to donate your blood'
+                                    />
                                     <Button
                                         style={{ marginTop: 15 }}
                                         onClick={this.checkDonor}
