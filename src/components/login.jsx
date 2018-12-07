@@ -3,16 +3,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 //Material-UI Components
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import { TextField } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
+import {
+  withStyles, Paper, TextField, Typography, Button, CircularProgress,
+  InputLabel, FormControl, Select, OutlinedInput
+} from '@material-ui/core'
 
 //firebase & its components
 import * as firebase from 'firebase';
